@@ -1,12 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import styles from './app.module.scss';
-import NxWelcome from './nx-welcome';
+import { FileUpload } from './components/fileUpload';
 
 export function App() {
   return (
     <>
-      <NxWelcome title="client" />
-      <div />
+      <h1>Welcome to File Sharing</h1>
+      <FileUpload />
     </>
   );
 }
