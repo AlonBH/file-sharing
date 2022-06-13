@@ -1,1 +1,27 @@
 /* Your styles goes here. */
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  width: 100%;
+  min-width: 400px;
+  justify-content: space-between;
+}
+
+.download {
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  width: 100%;
+}

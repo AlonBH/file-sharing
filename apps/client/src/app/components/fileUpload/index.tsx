@@ -1,15 +1,21 @@
 import { Button } from '@mui/material';
 
-export const FileUpload = () => {
+interface FileUploadProps {
+  label: string,
+  children: React.ReactNode
+}
+
+export const FileUpload = ({label, children}: FileUploadProps) => {
   return (
     <Button
-  variant="contained"
-  component="label">
-  Upload File
-  <input
-    type="file"
-    hidden
-  />
-</Button>
+      variant="contained"
+      component="label"
+      endIcon={children}>
+      {label}
+      <input
+        type="file"
+        hidden
+      />
+    </Button>
   );
 }
