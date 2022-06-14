@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "type": "node",
+            "name": "debug server",
+            "request": "launch",
+            "port": "9229"
+        }
+    ]
+}
