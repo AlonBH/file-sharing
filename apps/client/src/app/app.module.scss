@@ -17,9 +17,10 @@ body {
   justify-content: space-between;
 }
 
-.download {
+.action {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .container {
