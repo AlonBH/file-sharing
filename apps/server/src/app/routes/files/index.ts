@@ -3,16 +3,13 @@ import * as multer from 'multer';
 import { Request, Response, Express } from 'express';
 import * as path from 'path';
 import * as md5 from 'blueimp-md5';
+import * as fs from 'fs';
 
 interface MulterRequest extends Request {
   file: Express.Multer.File;
 }
 
-const createIdFilePrefix = (file: Express.Multer.File) => {
-  const id = parseInt(md5(file).slice(0, 6), 16) % 1000000;
-  console.log(id);
-  return id;
-}
+const createIdFilePrefix = (file: Express.Multer.File) => parseInt(md5(file).slice(0, 6), 16) % 1000000;
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -34,10 +31,14 @@ fileRouter.post('', upload.single('file'), (req: Request, res: Response) => {
 });
 
 fileRouter.get('/:id', (req: Request, res: Response) => {
-  // fs.readFile('./uploads/PS 6.docx', 'utf8', (err, data ) => {
-  //   console.error(err);
-    res.sendFile(path.join(__dirname, '../../../uploads/224739-targil.pdf'));
-  // })
+  const files = fs.readdirSync('./uploads/');
+  const selectedFile = files.filter(fileName => fileName.slice(0, 6) == req.params.id);
+
+  if (selectedFile.length > 0) {
+    res.sendFile(path.join(__dirname, '../../../uploads', selectedFile[0]));
+  } else {
+    res.sendStatus(404);
+  }
 })
 
 export { fileRouter };
