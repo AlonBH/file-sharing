@@ -2,9 +2,16 @@ import { Router } from 'express';
 import * as multer from 'multer';
 import { Request, Response, Express } from 'express';
 import * as path from 'path';
+import * as md5 from 'blueimp-md5';
 
 interface MulterRequest extends Request {
   file: Express.Multer.File;
+}
+
+const createIdFilePrefix = (file: Express.Multer.File) => {
+  const id = parseInt(md5(file).slice(0, 6), 16) % 1000000;
+  console.log(id);
+  return id;
 }
 
 const storage = multer.diskStorage({
@@ -12,7 +19,7 @@ const storage = multer.diskStorage({
     cb(null, './uploads');
   },
   filename: function (req, file, cb) {
-    const filePrefix = Math.floor(100000 + Math.random() * 900000);
+    const filePrefix = createIdFilePrefix(file);
     cb(null, `${filePrefix}-${file.originalname}`);
   }
 });
