@@ -1,65 +1,67 @@
-import { Divider, Button, Typography, IconButton, Modal, Box } from '@mui/material';
-import { Upload, Download, Send } from '@mui/icons-material';
+import { Divider, Button, Typography, IconButton } from '@mui/material';
+import { AttachFile, Upload, Download } from '@mui/icons-material';
 import ReactCodeInput from 'react-code-input';
 import { useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
+import { saveAs } from 'file-saver';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import styles from './app.module.scss';
 import { FileUpload } from './components/fileUpload';
+import { CodeModal } from './components/codeModal';
 
 export function App() {
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(undefined);
   const [showCode, setShowCode] = useState(false);
+  const [code, setCode] = useState('');
+  const [downloadCode, setDownloadCode] = useState('');
 
   const handleUploadedFile = (event: any) => {
     setSelectedFile(event.target.files[0]);
   }
 
+  interface FileResponseBody {
+    code: string
+  }
+
   const handleFileSubmission = () => {
     const data = new FormData();
-    if(selectedFile){
+    if (selectedFile) {
       data.append('file', selectedFile);
-      axios.post('http://localhost:3333/api/files', data).then(response => {
+      axios.post('http://localhost:3333/api/files', data).then((res: AxiosResponse<FileResponseBody>) => {
+        setCode(res.data.code);
         setShowCode(true);
       });
     }
+  }
+
+  const handleFileDownload = () => {
+    axios.get(`http://localhost:3333/api/files/${downloadCode}`).then((res: any) => {
+      const file = new Blob([res.data], {type: res.headers['content-type']});
+      saveAs(file);
+    });
   }
 
   const handleModalClose = () => {
     setShowCode(false);
   }
 
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    pt: 2,
-    px: 4,
-    pb: 3,
-  };
-
   return (
     <>
       <Typography variant="h3">Welcome to File Sharing</Typography>
       <div className={styles.actions}>
         <div className={styles.action}>
-          <FileUpload label="upload" uploadHandler={handleUploadedFile}>
-            <Upload className={styles.download} />
+          <FileUpload label="Select File" uploadHandler={handleUploadedFile}>
+            <AttachFile className={styles.download} />
           </FileUpload>
-          <IconButton color="primary" aria-label="upload picture" component="span" onClick={handleFileSubmission}>
-            <Send />
+          <IconButton color="primary" aria-label="upload picture" component="span" disabled={!selectedFile} onClick={handleFileSubmission}>
+            <Upload />
           </IconButton>
         </div>
         <Divider orientation="vertical" flexItem />
         <div className={styles.action}>
-          <ReactCodeInput inputMode="numeric" name="fileCode" type="number" fields={6} />
-          <Button variant="contained" endIcon={<Download />}>
+          <ReactCodeInput inputMode="numeric" name="fileCode" type="number" fields={6} onChange={setDownloadCode} />
+          <Button variant="contained" onClick={handleFileDownload} endIcon={<Download />}>
             Download
           </Button>
         </div>
