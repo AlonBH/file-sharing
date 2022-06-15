@@ -36,9 +36,11 @@ export function App() {
   }
 
   const handleFileDownload = () => {
-    axios.get(`http://localhost:3333/api/files/${downloadCode}`).then((res: any) => {
-      const file = new Blob([res.data], {type: res.headers['content-type']});
+    axios.get(`/files/${downloadCode}`, { responseType: 'blob' }).then((res: AxiosResponse) => {
+      const file = new Blob([res.data], { type: res.headers['content-type'] });
       saveAs(file);
+    }).catch(error => {
+      setFileNotFound(true);
     });
   }
 
