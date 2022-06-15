@@ -2,7 +2,6 @@ import { Router } from 'express';
 import * as multer from 'multer';
 import { Request, Response, Express } from 'express';
 import * as path from 'path';
-import * as md5 from 'blueimp-md5';
 import * as fs from 'fs';
 
 interface MulterRequest extends Request {
