@@ -2,34 +2,39 @@ import { Divider, Button, Typography, IconButton } from '@mui/material';
 import { AttachFile, Upload, Download } from '@mui/icons-material';
 import ReactCodeInput from 'react-code-input';
 import { useState } from 'react';
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
+import axios from './axios';
 import { saveAs } from 'file-saver';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import './app.scss';
 import { FileUpload } from './components/fileUpload';
 import { CodeModal } from './components/codeModal';
+import { ErrorModal } from './components/errorModal';
+
+interface FileResponseBody {
+  code: string
+}
 
 export function App() {
-  const [selectedFile, setSelectedFile] = useState(undefined);
+  const [selectedFile, setSelectedFile] = useState<File>();
   const [showCode, setShowCode] = useState(false);
   const [code, setCode] = useState('');
   const [downloadCode, setDownloadCode] = useState('');
   const [fileNotFound, setFileNotFound] = useState(false);
 
-  const handleUploadedFile = (event: any) => {
-    setSelectedFile(event.target.files[0]);
-  }
-
-  interface FileResponseBody {
-    code: string
+  const handleUploadedFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.currentTarget.files;
+    if (files) {
+      setSelectedFile(files[0]);
+    }
   }
 
   const handleFileSubmission = () => {
     const data = new FormData();
     if (selectedFile) {
       data.append('file', selectedFile);
-      axios.post('http://localhost:3333/api/files', data).then((res: AxiosResponse<FileResponseBody>) => {
+      axios.post('/files', data).then((res: AxiosResponse<FileResponseBody>) => {
         setCode(res.data.code);
         setShowCode(true);
       });
