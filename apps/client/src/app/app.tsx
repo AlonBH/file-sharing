@@ -15,6 +15,7 @@ export function App() {
   const [showCode, setShowCode] = useState(false);
   const [code, setCode] = useState('');
   const [downloadCode, setDownloadCode] = useState('');
+  const [fileNotFound, setFileNotFound] = useState(false);
 
   const handleUploadedFile = (event: any) => {
     setSelectedFile(event.target.files[0]);
@@ -69,6 +70,10 @@ export function App() {
         </div>
       </div>
       <CodeModal code={code} showModal={showCode} handleModalClose={handleModalClose} />
+      <ErrorModal
+        message={"File not found. Please verify code with sender and try again"}
+        showModal={fileNotFound}
+        handleModalClose={() => setFileNotFound(false)} />
     </>
   );
 }
