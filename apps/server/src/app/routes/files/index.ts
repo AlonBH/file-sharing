@@ -9,14 +9,14 @@ interface MulterRequest extends Request {
   file: Express.Multer.File;
 }
 
-const createIdFilePrefix = (file: Express.Multer.File) => parseInt(md5(file).slice(0, 6), 16) % 1000000;
+const createIdFilePrefix = () => Math.floor(100000 + Math.random() * 900000);;
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, './uploads');
   },
   filename: function (req, file, cb) {
-    const filePrefix = createIdFilePrefix(file);
+    const filePrefix = createIdFilePrefix();
     cb(null, `${filePrefix}-${file.originalname}`);
   }
 });
