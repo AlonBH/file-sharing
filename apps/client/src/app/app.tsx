@@ -6,7 +6,7 @@ import axios, { AxiosResponse } from 'axios';
 import { saveAs } from 'file-saver';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import styles from './app.module.scss';
+import './app.scss';
 import { FileUpload } from './components/fileUpload';
 import { CodeModal } from './components/codeModal';
 
@@ -51,17 +51,17 @@ export function App() {
   return (
     <>
       <Typography variant="h3">Welcome to File Sharing</Typography>
-      <div className={styles.actions}>
-        <div className={styles.action}>
+      <div className="actions">
+        <div className="action">
           <FileUpload label="Select File" uploadHandler={handleUploadedFile}>
-            <AttachFile className={styles.download} />
+            <AttachFile className="download" />
           </FileUpload>
           <IconButton color="primary" aria-label="upload picture" component="span" disabled={!selectedFile} onClick={handleFileSubmission}>
             <Upload />
           </IconButton>
         </div>
         <Divider orientation="vertical" flexItem />
-        <div className={styles.action}>
+        <div className="action">
           <ReactCodeInput inputMode="numeric" name="fileCode" type="number" fields={6} onChange={setDownloadCode} />
           <Button variant="contained" onClick={handleFileDownload} endIcon={<Download />}>
             Download
