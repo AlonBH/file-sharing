@@ -4,6 +4,8 @@ import { Request, Response, Express } from 'express';
 import * as path from 'path';
 import * as fs from 'fs';
 
+import { updateClient } from '../updates/';
+
 interface MulterRequest extends Request {
   file: Express.Multer.File;
 }
@@ -35,9 +37,14 @@ fileRouter.get('/:id', (req: Request, res: Response) => {
 
   if (selectedFile.length > 0) {
     res.sendFile(path.join(__dirname, '../../../uploads', selectedFile[0]));
+    updateClient(req.params.id, "File was downloaded");
   } else {
     res.sendStatus(404);
   }
 })
+
+interface MulterRequest extends Request {
+  file: Express.Multer.File;
+}
 
 export { fileRouter };

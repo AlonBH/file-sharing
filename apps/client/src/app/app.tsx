@@ -1,7 +1,7 @@
 import { Divider, Button, Typography, IconButton } from '@mui/material';
 import { AttachFile, Upload, Download } from '@mui/icons-material';
 import ReactCodeInput from 'react-code-input';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AxiosResponse } from 'axios';
 import axios from './axios';
 import { saveAs } from 'file-saver';
@@ -22,6 +22,22 @@ export function App() {
   const [code, setCode] = useState('');
   const [downloadCode, setDownloadCode] = useState('');
   const [fileNotFound, setFileNotFound] = useState(false);
+  const [listening, setListening] = useState(false);
+  const [updates, setUpdates] = useState([]);
+
+  useEffect( () => {
+    if (listening) {
+      const events = new EventSource(`http://localhost:3333/api/updates/${code}`);
+
+      events.onmessage = (event) => {
+        const parsedData = JSON.parse(event.data);
+        setUpdates(updates.concat(parsedData));
+      };
+
+      setListening(false);
+    }
+  }, [listening]);
+
 
   const handleUploadedFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.currentTarget.files;
@@ -37,6 +53,7 @@ export function App() {
       axios.post('/files', data).then((res: AxiosResponse<FileResponseBody>) => {
         setCode(res.data.code);
         setShowCode(true);
+        setListening(true);
       });
     }
   }
@@ -74,6 +91,9 @@ export function App() {
           </Button>
         </div>
       </div>
+      <ul>
+        {updates.map((update: {message: string}, index) => <li key={index}>{update.message}</li>)}
+      </ul>
       <CodeModal code={code} showModal={showCode} handleModalClose={handleModalClose} />
       <ErrorModal
         message={"File not found. Please verify code with sender and try again"}

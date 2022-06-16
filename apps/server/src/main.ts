@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { fileRouter } from './app/routes/files';
+import { updatesRouter } from './app/routes/updates';
 
 const app = express();
 app.use(cors());
@@ -18,6 +19,8 @@ app.get('/api', (req, res) => {
 });
 
 app.use('/api/files', fileRouter);
+
+app.use('/api/updates', updatesRouter);
 
 const port = process.env.port || 3333;
 const server = app.listen(port, () => {
